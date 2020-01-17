@@ -11,19 +11,22 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -52,7 +55,6 @@ import co.chatsdk.core.message_action.MessageAction;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.types.MessageSendProgress;
 import co.chatsdk.core.types.MessageSendStatus;
-import co.chatsdk.core.types.MessageType;
 import co.chatsdk.core.utils.CrashReportingCompletableObserver;
 import co.chatsdk.core.utils.StringChecker;
 import co.chatsdk.core.utils.Strings;
@@ -69,7 +71,6 @@ import io.reactivex.Observable;
 import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
@@ -123,10 +124,11 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
      */
     protected boolean scrolling = false;
 
+    protected Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         setContentView(activityLayout());
 
@@ -260,25 +262,50 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         return ab;
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     protected void initActionBar () {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        final ActionBar ab = readyActionBarToCustomView();
-
-        // http://stackoverflow.com/questions/16026818/actionbar-custom-view-with-centered-imageview-action-items-on-sides
-        actionBarView = getLayoutInflater().inflate(R.layout.action_bar_chat_activity, null);
-
-        actionBarView.setOnClickListener(v -> {
-            if (ChatSDK.config().threadDetailsEnabled) {
-                openThreadDetailsActivity();
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                getSupportActionBar().setDisplayShowCustomEnabled(true);
             }
-        });
 
-        titleTextView = actionBarView.findViewById(R.id.text_name);
-        subtitleTextView = actionBarView.findViewById(R.id.text_subtitle);
-        threadImageView = actionBarView.findViewById(R.id.image_avatar);
+            titleTextView = mToolbar.findViewById(R.id.text_name);
+            subtitleTextView = mToolbar.findViewById(R.id.text_subtitle);
+            threadImageView = mToolbar.findViewById(R.id.image_avatar);
 
-        ab.setCustomView(actionBarView);
+            if (ChatSDK.config().navigationBackIcon != 0) {
+                mToolbar.setNavigationIcon(getResources().getDrawable(ChatSDK.config().navigationBackIcon));
+            } else {
+                mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back_default));
+            }
+
+            if (ChatSDK.config().chatOtherUserNameFontColor != 0) {
+                int color = ContextCompat.getColor(this, ChatSDK.config().chatOtherUserNameFontColor);
+                titleTextView.setTextColor(color);
+            }
+
+            if (ChatSDK.config().chatOtherUserStatusFontColor != 0) {
+                int color = ContextCompat.getColor(this, ChatSDK.config().chatOtherUserStatusFontColor);
+                subtitleTextView.setTextColor(color);
+            }
+
+            mToolbar.setOnClickListener(v -> {
+                if (ChatSDK.config().threadDetailsEnabled) {
+                    openThreadDetailsActivity();
+                }
+            });
+        }
 
         reloadActionBar();
     }
@@ -286,7 +313,9 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
     protected void reloadActionBar () {
         String displayName = Strings.nameForThread(thread);
         setTitle(displayName);
-        titleTextView.setText(displayName);
+        if (titleTextView != null) {
+            titleTextView.setText(displayName);
+        }
         ThreadImageBuilder.load(threadImageView, thread);
     }
 
@@ -510,6 +539,13 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
             ChatSDK.thread().addUsersToThread(thread, currentUser)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new CrashReportingCompletableObserver(disposableList));
+        }
+
+        if (thread != null) {
+            String otherUserStatus = thread.otherUser().getStatus();
+            if (!TextUtils.isEmpty(otherUserStatus)) {
+                setSubtitleText(otherUserStatus);
+            }
         }
 
         if (thread.typeIs(ThreadType.Private1to1) && thread.otherUser() != null && ChatSDK.lastOnline() != null) {

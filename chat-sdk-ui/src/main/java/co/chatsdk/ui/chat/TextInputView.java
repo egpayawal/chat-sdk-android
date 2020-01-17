@@ -14,16 +14,18 @@ import android.content.ContextWrapper;
 import android.graphics.Rect;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -80,10 +82,28 @@ public class TextInputView extends LinearLayout implements TextView.OnEditorActi
         inflate(getContext(), R.layout.view_chat_text_input, this);
     }
 
-    protected void initViews(){
+    protected void initViews() {
         btnSend = findViewById(R.id.button_send);
         btnOptions = findViewById(R.id.button_options);
         etMessage = findViewById(R.id.text_input_message);
+
+        if (ChatSDK.config().chatOptionIconDrawable != 0) {
+            btnOptions.setImageDrawable(getResources().getDrawable(ChatSDK.config().chatOptionIconDrawable));
+        }
+
+        if (!TextUtils.isEmpty(ChatSDK.config().chatInputHint)) {
+            etMessage.setHint(ChatSDK.config().chatInputHint);
+        }
+
+        if (ChatSDK.config().chatInputHintFontColor != 0) {
+            int color = ContextCompat.getColor(getActivity(), ChatSDK.config().chatInputHintFontColor);
+            etMessage.setHintTextColor(color);
+        }
+
+        if (ChatSDK.config().chatInputFontColor != 0) {
+            int color = ContextCompat.getColor(getActivity(), ChatSDK.config().chatInputFontColor);
+            etMessage.setTextColor(color);
+        }
     }
 
     protected Activity getActivity() {
@@ -265,12 +285,15 @@ public class TextInputView extends LinearLayout implements TextView.OnEditorActi
     }
 
     public void updateSendButton () {
-        if(StringChecker.isNullOrEmpty(getMessageText()) && audioModeEnabled) {
+        if (StringChecker.isNullOrEmpty(getMessageText()) && audioModeEnabled) {
             btnSend.setImageResource(R.drawable.ic_36_mic);
             recordOnPress = true;
-        }
-        else {
-            btnSend.setImageResource(R.drawable.ic_36_send);
+        } else {
+            if (ChatSDK.config().chatSendIconDrawable != 0) {
+                btnSend.setImageDrawable(getResources().getDrawable(ChatSDK.config().chatSendIconDrawable));
+            } else {
+                btnSend.setImageResource(R.drawable.ic_36_send);
+            }
             recordOnPress = false;
         }
     }

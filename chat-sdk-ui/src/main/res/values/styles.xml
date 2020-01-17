@@ -14,6 +14,13 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="SdkTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+
     <style name="ThemeOverlay.SdkTheme.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">?android:textColorSecondary</item>
@@ -55,7 +62,13 @@
         <item name="android:textSize">13sp</item>
         <item name="android:padding">2dp</item>
         <item name="android:textColor">@android:color/darker_gray</item>
-        <item name="android:textStyle">italic</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="SendMessageStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:padding">2dp</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
     <!--Circle image view style-->
@@ -97,5 +110,9 @@
         <item name="android:layout_marginBottom">1dp</item>
         <item name="android:background">@null</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

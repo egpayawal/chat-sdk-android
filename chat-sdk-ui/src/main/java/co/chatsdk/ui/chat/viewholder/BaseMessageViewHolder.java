@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import co.chatsdk.core.base.AbstractMessageViewHolder;
 import co.chatsdk.core.dao.Message;
 import co.chatsdk.core.interfaces.ThreadType;
@@ -72,7 +76,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         }
 
         // Enable linkify
-        messageTextView.setAutoLinkMask(Linkify.ALL);
+//        messageTextView.setAutoLinkMask(Linkify.ALL);
 
     }
 
@@ -113,8 +117,14 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         setAlpha(alpha);
 
         String time = String.valueOf(getTimeFormat(message).format(message.getDate().toDate()));
+        Log.e("DEBUG", "------> time: " + time);
         timeTextView.setText(time);
 
+//        if (ChatSDK.config().isMessageMeVisible) {
+//
+//        }
+
+        avatarImageView.setVisibility(ChatSDK.config().isMessageMeVisible ? View.VISIBLE : View.GONE);
         avatarImageView.setImageURI(message.getSender().getAvatarURL());
 
         if (message.getSender().isMe()) {

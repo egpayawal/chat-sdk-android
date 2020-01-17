@@ -175,6 +175,16 @@ public class Configuration {
 
     public HashMap<String, Object> customProperties = new HashMap<>();
 
+    public int navigationBackIcon;
+    public int chatOtherUserNameFontColor;
+    public int chatOtherUserStatusFontColor;
+    public int chatSendIconDrawable;
+    public int chatOptionIconDrawable;
+    public int chatInputHintFontColor;
+    public int chatInputFontColor;
+    public String chatInputHint;
+    public boolean isMessageMeVisible = true;
+
     public Configuration () {
         searchIndexes.add(Keys.Name);
         searchIndexes.add(Keys.Email);
@@ -296,7 +306,6 @@ public class Configuration {
             config.firebaseRootPath = rootPath;
             return this;
         }
-
 
         /**
          * In this case the resource will be set to the device's IMEI number
@@ -701,6 +710,51 @@ public class Configuration {
 
         public Builder nearbyUserMaxDistance (int maxDistance) {
             config.nearbyUserMaxDistance = maxDistance;
+            return this;
+        }
+
+        public Builder setNavigationBackIcon(int resource) {
+            config.navigationBackIcon = resource;
+            return this;
+        }
+
+        public Builder setChatOtherUserNameFontColor(int color) {
+            config.chatOtherUserNameFontColor = color;
+            return this;
+        }
+
+        public Builder setChatOtherUserStatusFontColor(int color) {
+            config.chatOtherUserStatusFontColor = color;
+            return this;
+        }
+
+        public Builder setChatSendIcon(int drawable) {
+            config.chatSendIconDrawable = drawable;
+            return this;
+        }
+
+        public Builder setChatOptionIconDrawable(int drawable) {
+            config.chatOptionIconDrawable = drawable;
+            return this;
+        }
+
+        public Builder setChatInputHintFontColor(int color) {
+            config.chatInputHintFontColor = color;
+            return this;
+        }
+
+        public Builder setChatInputFontColor(int color) {
+            config.chatInputFontColor = color;
+            return this;
+        }
+
+        public Builder setChatInputHint(String hint) {
+            config.chatInputHint = hint;
+            return this;
+        }
+
+        public Builder setMessageMeVisibility(boolean isVisible) {
+            config.isMessageMeVisible = isVisible;
             return this;
         }
 
