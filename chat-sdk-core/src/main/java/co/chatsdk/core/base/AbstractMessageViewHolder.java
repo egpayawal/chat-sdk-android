@@ -17,6 +17,7 @@ public abstract class AbstractMessageViewHolder extends RecyclerView.ViewHolder 
 
     protected WeakReference<Activity> activity;
     protected Message message;
+    protected Message prevMessage;
 
     protected View.OnClickListener onClickListener = null;
     protected View.OnLongClickListener onLongClickListener = null;
@@ -43,8 +44,13 @@ public abstract class AbstractMessageViewHolder extends RecyclerView.ViewHolder 
     public abstract void setAlpha (float alpha);
     public abstract LinearLayout getExtraLayout();
 
-    public void setMessage (Message message) {
+//    public void setMessage (Message message) {
+//        this.message = message;
+//    }
+
+    public void setMessage(Message message, Message prevMessage) {
         this.message = message;
+        this.prevMessage = prevMessage;
     }
 
     public void setOnClickListener (View.OnClickListener listener) {

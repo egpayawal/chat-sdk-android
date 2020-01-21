@@ -117,7 +117,7 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
      * If set to false in onCreate the menu threads wont be inflated in the menu.
      * This can be useful if you want to customize the action bar.
      */
-    protected boolean inflateMenuItems = true;
+    protected boolean inflateMenuItems = false;
 
     /**
      * Save the scroll state of the messages list.

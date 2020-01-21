@@ -1,29 +1,26 @@
 package co.chatsdk.ui.chat.viewholder;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.graphics.PorterDuff;
-import android.text.TextUtils;
-import android.text.util.Linkify;
-import android.util.Log;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import co.chatsdk.core.base.AbstractMessageViewHolder;
 import co.chatsdk.core.dao.Message;
@@ -32,7 +29,6 @@ import co.chatsdk.core.message_action.MessageAction;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.types.MessageSendStatus;
 import co.chatsdk.core.types.ReadStatus;
-import co.chatsdk.core.utils.CrashReportingCompletableObserver;
 import co.chatsdk.ui.R;
 import co.chatsdk.ui.chat.message_action.CopyMessageAction;
 import co.chatsdk.ui.chat.message_action.DeleteMessageAction;
@@ -54,6 +50,8 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
     protected LinearLayout extraLayout;
     protected ImageView readReceiptImageView;
     protected ProgressBar progressBar;
+    protected RelativeLayout containerTimeDivider;
+    protected TextView timeDividerTextView;
 
     public BaseMessageViewHolder(View itemView, Activity activity, PublishSubject<List<MessageAction>> actionPublishSubject) {
         super(itemView, activity, actionPublishSubject);
@@ -67,6 +65,8 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         extraLayout = itemView.findViewById(R.id.layout_extra);
         readReceiptImageView = itemView.findViewById(R.id.image_read_receipt);
         progressBar = itemView.findViewById(R.id.progress_bar);
+        containerTimeDivider = itemView.findViewById(R.id.container_time_divider);
+        timeDividerTextView = itemView.findViewById(R.id.text_time_divider);
 
         itemView.setOnClickListener(this::onClick);
         itemView.setOnLongClickListener(this::onLongClick);
@@ -105,8 +105,8 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         return false;
     }
 
-    public void setMessage (Message message) {
-        super.setMessage(message);
+    public void setMessage(Message message, Message prevMessage) {
+        super.setMessage(message, prevMessage);
 
         setBubbleHidden(true);
         setTextHidden(true);
@@ -116,21 +116,18 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         float alpha = message.getMessageStatus() == MessageSendStatus.Sent || message.getMessageStatus() == MessageSendStatus.Delivered ? 1.0f : 0.7f;
         setAlpha(alpha);
 
-        String time = String.valueOf(getTimeFormat(message).format(message.getDate().toDate()));
-        Log.e("DEBUG", "------> time: " + time);
-        timeTextView.setText(time);
+        String chatTime = getTimeFormat(message);
+        setTimeFormatThreshold(message, prevMessage);
+        setTimeFormatDividerThreshold(message, prevMessage);
 
-//        if (ChatSDK.config().isMessageMeVisible) {
-//
-//        }
+        timeTextView.setText(chatTime);
 
-        avatarImageView.setVisibility(ChatSDK.config().isMessageMeVisible ? View.VISIBLE : View.GONE);
         avatarImageView.setImageURI(message.getSender().getAvatarURL());
 
         if (message.getSender().isMe()) {
+            avatarImageView.setVisibility(ChatSDK.config().isMessageMeVisible ? View.VISIBLE : View.GONE);
             messageBubble.getBackground().setColorFilter(ChatSDK.config().messageColorMe, PorterDuff.Mode.MULTIPLY);
-        }
-        else {
+        } else {
             messageBubble.getBackground().setColorFilter(ChatSDK.config().messageColorReply, PorterDuff.Mode.MULTIPLY);
         }
 
@@ -274,8 +271,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         return null;
     }
 
-    protected SimpleDateFormat getTimeFormat(Message message){
-
+    protected SimpleDateFormat getTimeFormatThreshold(Message message) {
         Date curTime = new Date();
         long interval = (curTime.getTime() - message.getDate().toDate().getTime()) / 1000L;
 
@@ -284,18 +280,91 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
 
         // More then a day ago
         if (interval < 3600 * 24) {
-            return simpleDateFormat;
-        }
-        else if (interval < 3600 * 24 * 7) {
+//            return simpleDateFormat;
+            simpleDateFormat.applyPattern(dateFormat + " s ");
+        } else if (interval < 3600 * 24 * 7) {
             simpleDateFormat.applyPattern(dateFormat + " " + DayToWeekFormat);
-        }
-        else if (interval < 3600 * 24 * 365) {
+        } else if (interval < 3600 * 24 * 365) {
             simpleDateFormat.applyPattern(dateFormat + " " + WeekToYearFormat);
-        }
-        else {
+        } else {
             simpleDateFormat.applyPattern(dateFormat + " " + MoreThanYearFormat);
         }
         return simpleDateFormat;
+    }
+
+    protected String getTimeFormat(Message message) {
+        long interval = message.getDate().toDate().getTime() / 1000L;
+
+        String dateFormat = ChatSDK.config().messageTimeFormat;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.US);
+
+        Date date = new Date(interval * 1000L);
+        return simpleDateFormat.format(date);
+    }
+
+    protected void setTimeFormatThreshold(Message message, Message prevMessage) {
+        long currentTimeUnix = (message.getDate().toDate().getTime()) / 1000L;
+        long prevTimeUnix = 0;
+
+        if (prevMessage != null) {
+            prevTimeUnix = (prevMessage.getDate().toDate().getTime()) / 1000L;
+        }
+
+        long timeSec = currentTimeUnix - prevTimeUnix;
+        int hours = (int) timeSec / 3600;
+        int temp = (int) timeSec - hours * 3600;
+        int mins = temp / 60;
+
+        // check if the thread is less than 10 min
+        if ((mins > 0 && mins < 10) || mins == 0) {
+            // this code blocked is to show the timestamp for both recipient and sender
+            if (!message.getSender().isMe() && prevMessage != null && prevMessage.getSender().isMe()) {
+                timeTextView.setVisibility(View.VISIBLE);
+            } else if (message.getSender().isMe() && prevMessage != null && !prevMessage.getSender().isMe()) {
+                timeTextView.setVisibility(View.VISIBLE);
+            } else {
+                timeTextView.setVisibility(View.GONE);
+            }
+
+        } else {
+            timeTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void setTimeFormatDividerThreshold(Message message, Message prevMessage) {
+        long currentTimeUnix = message.getDate().toDate().getTime();
+
+        long prevTimeUnix = 0;
+        if (prevMessage != null) {
+            prevTimeUnix = prevMessage.getDate().toDate().getTime();
+        }
+
+        String currDividerDate = getFormattedDate(currentTimeUnix);
+        String prevDividerDate = getFormattedDate(prevTimeUnix);
+        if (currDividerDate.equalsIgnoreCase(prevDividerDate)) {
+            containerTimeDivider.setVisibility(View.GONE);
+        } else {
+            containerTimeDivider.setVisibility(View.VISIBLE);
+        }
+
+        timeDividerTextView.setText(currDividerDate);
+    }
+
+    protected String getFormattedDate(long milliSeconds) {
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(milliSeconds);
+
+        Calendar now = Calendar.getInstance();
+
+        if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
+            return "Today";
+        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1) {
+            return "Yesterday";
+        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
+            return DateFormat.format("MMM dd", smsTime).toString();
+        } else {
+            return DateFormat.format("MMM dd, yyyy", smsTime).toString();
+        }
     }
 
 }

@@ -80,7 +80,20 @@ public class MessageListAdapter extends RecyclerView.Adapter<AbstractMessageView
         MessageListItem messageItem = getMessageItems().get(position);
         Message message = messageItem.getMessage();
 
-        holder.setMessage(message);
+//        holder.setMessage(message);
+
+        int prev = position - 1;
+        if (prev != -1) {
+            MessageListItem messageItemPrev = getMessageItems().get(prev);
+            if (messageItemPrev != null) {
+                Message messagePrev = messageItemPrev.getMessage();
+                holder.setMessage(message, messagePrev);
+            } else {
+                holder.setMessage(message, null);
+            }
+        } else {
+            holder.setMessage(message, null);
+        }
 
         if (message.getMessageStatus().equals(MessageSendStatus.Uploading) || (messageItem.progress > 0 && messageItem.progress < 1)) {
             holder.showProgressBar(messageItem.progress);

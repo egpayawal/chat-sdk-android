@@ -24,8 +24,8 @@ public class ImageMessageViewHolder extends BaseMessageViewHolder {
     }
 
     @Override
-    public void setMessage(Message message) {
-        super.setMessage(message);
+    public void setMessage(Message message, Message prevMessage) {
+        super.setMessage(message, prevMessage);
 
         setImageHidden(false);
 
@@ -51,14 +51,14 @@ public class ImageMessageViewHolder extends BaseMessageViewHolder {
     }
 
     @Override
-    public void onClick (View v) {
+    public void onClick(View v) {
         super.onClick(v);
         if (message != null) {
             ImageMessageOnClickHandler.onClick(activity.get(), v, getImageURL());
         }
     }
 
-    public String getImageURL () {
+    public String getImageURL() {
         return message.stringForKey(Keys.MessageImageURL);
     }
 }

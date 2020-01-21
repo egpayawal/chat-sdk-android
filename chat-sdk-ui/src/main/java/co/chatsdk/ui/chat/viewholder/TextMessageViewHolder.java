@@ -1,7 +1,6 @@
 package co.chatsdk.ui.chat.viewholder;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.view.View;
 
 import java.util.List;
@@ -18,33 +17,23 @@ public class TextMessageViewHolder extends BaseMessageViewHolder {
     }
 
     @Override
-    public void setMessage(Message message) {
-        super.setMessage(message);
+    public void setMessage(Message message, Message prevMessage) {
+        super.setMessage(message, prevMessage);
 
         messageTextView.setText(message.getText() == null ? "" : message.getText());
         setBubbleHidden(false);
         setTextHidden(false);
 
-//        Timber.d("Is Me: " + text.getSender().isMe() + " left padding: " + messageBubble.getPaddingLeft() + " right padding: " + messageBubble.getPaddingRight());
-
         if (message.getSender().isMe()) {
             messageTextView.setTextColor(ChatSDK.config().messageTextColorMe);
-        }
-        else {
+        } else {
             messageTextView.setTextColor(ChatSDK.config().messageTextColorReply);
         }
-
-//        messageTextView.setText("HelloHelloHelloHel34523_loHelloHelloHelloHelloHelloHelloHelloHelloHello.png");
-//        setIconHidden(false);
 
     }
 
     @Override
     public boolean onLongClick(View v) {
         return super.onLongClick(v);
-
-
-
-
     }
 }

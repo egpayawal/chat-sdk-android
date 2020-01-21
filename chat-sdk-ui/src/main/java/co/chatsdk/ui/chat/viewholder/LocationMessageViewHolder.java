@@ -20,8 +20,8 @@ public class LocationMessageViewHolder extends BaseMessageViewHolder {
     }
 
     @Override
-    public void setMessage(Message message) {
-        super.setMessage(message);
+    public void setMessage(Message message, Message prevMessage) {
+        super.setMessage(message, prevMessage);
 
         setImageHidden(false);
 
