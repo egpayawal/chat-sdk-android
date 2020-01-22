@@ -305,6 +305,12 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                     openThreadDetailsActivity();
                 }
             });
+
+            if (ChatSDK.config().chatMoreIconDrawable != 0) {
+                mToolbar.setOverflowIcon(ContextCompat.getDrawable(this, ChatSDK.config().chatMoreIconDrawable));
+            } else {
+                mToolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_more));
+            }
         }
 
         reloadActionBar();

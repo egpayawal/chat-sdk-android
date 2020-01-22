@@ -14,11 +14,16 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="SdkTheme.NoActionBar">
+    <style name="SdkTheme.NoActionBar" parent="@style/SdkTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@color/colorPrimaryDark</item>
         <item name="android:windowIsTranslucent">false</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
+    </style>
+
+    <style name="OverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_more</item>
     </style>
 
     <style name="ThemeOverlay.SdkTheme.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">

@@ -184,6 +184,7 @@ public class Configuration {
     public int chatInputFontColor;
     public String chatInputHint;
     public boolean isMessageMeVisible = true;
+    public int chatMoreIconDrawable;
 
     public Configuration () {
         searchIndexes.add(Keys.Name);
@@ -755,6 +756,11 @@ public class Configuration {
 
         public Builder setMessageMeVisibility(boolean isVisible) {
             config.isMessageMeVisible = isVisible;
+            return this;
+        }
+
+        public Builder setChatMoreIconDrawable(int drawable) {
+            config.chatMoreIconDrawable = drawable;
             return this;
         }
 
