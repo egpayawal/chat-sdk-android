@@ -68,20 +68,40 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_messages"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
+                android:fillViewport="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_above="@+id/linear"
-                android:layout_below="@id/card_container"
-                android:descendantFocusability="afterDescendants"
-                android:divider="@null"
-                android:dividerHeight="0dp"
-                android:listSelector="@android:color/transparent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:scrollbars="none"
-                android:transcriptMode="normal" />
+                android:layout_below="@id/card_container">
+
+                <LinearLayout
+                    android:id="@+id/container_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_messages"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:descendantFocusability="afterDescendants"
+                        android:divider="@null"
+                        android:dividerHeight="0dp"
+                        android:listSelector="@android:color/transparent"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin"
+                        android:scrollbars="none"
+                        android:transcriptMode="normal"
+                        android:clipToPadding="false"/>
+
+                    <include layout="@layout/footer_view" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

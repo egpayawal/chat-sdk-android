@@ -13,10 +13,10 @@
 
     <RelativeLayout
         android:id="@+id/container_time_divider"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:visibility="visible">
 
         <View
@@ -84,16 +84,19 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/message_sent_3"
-                android:paddingStart="15dp"
-                android:paddingLeft="15dp"
-                android:paddingEnd="15dp"
-                android:paddingRight="15dp">
+                android:background="@drawable/bubble_right_rounded2"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="5dp">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/image_icon"
                     android:layout_width="@dimen/message_icon_max_width"
                     android:layout_height="@dimen/message_icon_max_height"
+                    android:visibility="gone"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentBottom="true"

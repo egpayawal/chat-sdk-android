@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -168,11 +171,13 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                     // Check if the text from the current user, If so return so we wont vibrate for the user messages.
                     if (message.getSender().isMe() && isAdded) {
                         scrollListTo(ListPosition.Bottom, layoutManager().findLastVisibleItemPosition() > messageListAdapter.size() - 2);
+                        Log.e("DEBUG", "SCROLL 1");
                     }
                     else {
                         // If the user is near the bottom, then we scroll down when a text comes in
                         if(layoutManager().findLastVisibleItemPosition() > messageListAdapter.size() - 5) {
                             scrollListTo(ListPosition.Bottom, true);
+                            Log.e("DEBUG", "SCROLL 2");
                         }
                     }
                     if(ChatSDK.readReceipts() != null) {
@@ -238,6 +243,7 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                         if (ChatSDK.encryption() == null) {
                             if(messageListAdapter.addRow(progress.message, false, true, progress.uploadProgress, true)) {
                                 scrollListTo(ListPosition.Bottom, false);
+                                Log.e("DEBUG", "SCROLL 3");
                             }
                         }
                     }
@@ -329,6 +335,7 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         return R.layout.activity_chat;
     }
 
+    private NestedScrollView nestedScrollView;
     protected void initViews () {
         // Set up the text box - this is the box that sits above the keyboard
         textInputView = findViewById(R.id.view_message_text_input);
@@ -352,8 +359,10 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         });
 
         recyclerView = findViewById(R.id.recycler_messages);
+        nestedScrollView = findViewById(R.id.nestedScrollView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
         // Optimization
         recyclerView.setItemViewCacheSize(50);
 
@@ -888,10 +897,13 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         listPos = position;
 
         if (animated) {
-            recyclerView.smoothScrollToPosition(listPos);
+//            recyclerView.smoothScrollToPosition(listPos);
+            nestedScrollView.smoothScrollTo(0, listPos);
         }
         else {
-            recyclerView.getLayoutManager().scrollToPosition(listPos);
+//            recyclerView.getLayoutManager().scrollToPosition(listPos);
+            nestedScrollView.fling(0);
+            nestedScrollView.scrollTo(0, recyclerView.getBottom());
         }
     }
 
