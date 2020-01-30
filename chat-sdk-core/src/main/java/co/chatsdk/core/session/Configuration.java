@@ -185,6 +185,11 @@ public class Configuration {
     public String chatInputHint;
     public boolean isMessageMeVisible = true;
     public int chatMoreIconDrawable;
+    public int chatThreadListRightIconDrawable;
+    public int chatThreadListBackground;
+    public int chatThreadNameUnReadColor;
+    public int chatThreadLastMessageUnReadColor;
+    public int chatThreadLastMessageReadColor;
 
     public Configuration () {
         searchIndexes.add(Keys.Name);
@@ -761,6 +766,31 @@ public class Configuration {
 
         public Builder setChatMoreIconDrawable(int drawable) {
             config.chatMoreIconDrawable = drawable;
+            return this;
+        }
+
+        public Builder setChatThreadListRightIconDrawable(int drawable) {
+            config.chatThreadListRightIconDrawable = drawable;
+            return this;
+        }
+
+        public Builder setChatThreadListBackground(int color) {
+            config.chatThreadListBackground = color;
+            return this;
+        }
+
+        public Builder setChatThreadNameUnReadColor(int color) {
+            config.chatThreadNameUnReadColor = color;
+            return this;
+        }
+
+        public Builder setChatThreadLastMessageUnReadColor(int color) {
+            config.chatThreadLastMessageUnReadColor = color;
+            return this;
+        }
+
+        public Builder setChatThreadLastMessageReadColor(int color) {
+            config.chatThreadLastMessageReadColor = color;
             return this;
         }
 

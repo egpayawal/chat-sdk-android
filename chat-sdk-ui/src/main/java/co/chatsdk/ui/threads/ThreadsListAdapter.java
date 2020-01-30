@@ -8,10 +8,14 @@
 package co.chatsdk.ui.threads;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -41,8 +45,16 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
     protected PublishSubject<Thread> onClickSubject = PublishSubject.create();
     protected PublishSubject<Thread> onLongClickSubject = PublishSubject.create();
 
+    private Typeface mTypefaceNormal;
+    private Typeface mTypefaceBold;
+
     public ThreadsListAdapter(Context context) {
         this.context = new WeakReference(context);
+
+        if (this.context != null) {
+            mTypefaceBold = ResourcesCompat.getFont(this.context.get(), R.font.roboto_bold);
+            mTypefaceNormal = ResourcesCompat.getFont(this.context.get(), R.font.roboto_regular);
+        }
     }
 
     @Override
@@ -69,7 +81,15 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
         Message lastMessage = thread.lastMessage();
         if (lastMessage != null) {
             holder.dateTextView.setText(getLastMessageDateAsString(lastMessage.getDate().toDate()));
-            holder.lastMessageTextView.setText(getLastMessageText(thread.lastMessage()));
+
+            String message = "";
+            if (lastMessage.getSender().isMe()) {
+                message = message + "You: " + getLastMessageText(thread.lastMessage());
+            } else {
+                message = getLastMessageText(thread.lastMessage());
+            }
+            holder.lastMessageTextView.setText(message);
+
         } else {
             holder.dateTextView.setText("");
             holder.lastMessageTextView.setText("");
@@ -86,11 +106,33 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
             holder.unreadMessageCountTextView.setText(String.valueOf(unreadMessageCount));
             holder.unreadMessageCountTextView.setVisibility(View.VISIBLE);
 
-            holder.showUnreadIndicator();
-        }
-        else {
-            holder.hideUnreadIndicator();
+            // Modify Name and Last Message Text Color
+            if (ChatSDK.config().chatThreadNameUnReadColor != 0 && context != null) {
+                holder.nameTextView.setTextColor(ContextCompat.getColor(context.get(), ChatSDK.config().chatThreadNameUnReadColor));
+                holder.lastMessageTextView.setTextColor(ContextCompat.getColor(context.get(), ChatSDK.config().chatThreadNameUnReadColor));
+            }
+
+            if (mTypefaceBold != null) {
+                holder.nameTextView.setTypeface(mTypefaceBold);
+                holder.lastMessageTextView.setTypeface(mTypefaceBold);
+            }
+
+            // holder.showUnreadIndicator();
+        } else {
+            // holder.hideUnreadIndicator();
             holder.unreadMessageCountTextView.setVisibility(View.INVISIBLE);
+
+            // Modify Name and Last Message Text Color
+            if (ChatSDK.config().chatThreadNameUnReadColor != 0 &&
+                    ChatSDK.config().chatThreadLastMessageReadColor != 0 && context != null) {
+                holder.nameTextView.setTextColor(ContextCompat.getColor(context.get(), ChatSDK.config().chatThreadNameUnReadColor));
+                holder.lastMessageTextView.setTextColor(ContextCompat.getColor(context.get(), ChatSDK.config().chatThreadLastMessageReadColor));
+            }
+
+            if (mTypefaceNormal != null) {
+                holder.nameTextView.setTypeface(mTypefaceNormal);
+                holder.lastMessageTextView.setTypeface(mTypefaceNormal);
+            }
         }
 
         ThreadImageBuilder.load(holder.imageView, thread);
