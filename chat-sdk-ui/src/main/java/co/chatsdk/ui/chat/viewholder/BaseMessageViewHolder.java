@@ -2,6 +2,7 @@ package co.chatsdk.ui.chat.viewholder;
 
 import android.app.Activity;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -52,9 +54,12 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
     protected ProgressBar progressBar;
     protected RelativeLayout containerTimeDivider;
     protected TextView timeDividerTextView;
+    private Activity mActivity;
 
     public BaseMessageViewHolder(View itemView, Activity activity, PublishSubject<List<MessageAction>> actionPublishSubject) {
         super(itemView, activity, actionPublishSubject);
+
+        mActivity = activity;
 
         timeTextView = itemView.findViewById(R.id.text_time);
         avatarImageView = itemView.findViewById(R.id.image_avatar);
@@ -71,7 +76,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         itemView.setOnClickListener(this::onClick);
         itemView.setOnLongClickListener(this::onLongClick);
 
-        if(readReceiptImageView != null) {
+        if (readReceiptImageView != null) {
             readReceiptImageView.setVisibility(ChatSDK.readReceipts() != null ? View.VISIBLE : View.INVISIBLE);
         }
 
@@ -80,13 +85,13 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
 
     }
 
-    public void onClick (View v) {
+    public void onClick(View v) {
         if (onClickListener != null) {
             onClickListener.onClick(v);
         }
     }
 
-    public boolean onLongClick (View v) {
+    public boolean onLongClick(View v) {
         if (onLongClickListener != null) {
             onLongClickListener.onLongClick(v);
         } else if (message != null) {
@@ -110,7 +115,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
 
         setBubbleHidden(true);
         setTextHidden(true);
-        setIconHidden(true);
+//        setIconHidden(true);
         setImageHidden(true);
 
         float alpha = message.getMessageStatus() == MessageSendStatus.Sent || message.getMessageStatus() == MessageSendStatus.Delivered ? 1.0f : 0.7f;
@@ -134,31 +139,31 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         updateReadStatus();
     }
 
-    protected void updateReadStatus () {
+    protected void updateReadStatus() {
 
         if (message != null) {
             int resource = R.drawable.ic_message_received;
             ReadStatus status = message.getReadStatus();
 
             // Hide the read receipt for public threads
-            if(message.getThread().typeIs(ThreadType.Public) || ChatSDK.readReceipts() == null) {
+            if (message.getThread().typeIs(ThreadType.Public) || ChatSDK.readReceipts() == null) {
                 status = ReadStatus.hide();
             }
 
-            if(status.is(ReadStatus.delivered())) {
+            if (status.is(ReadStatus.delivered())) {
                 resource = R.drawable.ic_message_delivered;
             }
-            if(status.is(ReadStatus.read())) {
+            if (status.is(ReadStatus.read())) {
                 resource = R.drawable.ic_message_read;
             }
-            if(readReceiptImageView != null) {
+            if (readReceiptImageView != null) {
                 readReceiptImageView.setImageResource(resource);
                 readReceiptImageView.setVisibility(status.is(ReadStatus.hide()) ? View.INVISIBLE : View.VISIBLE);
             }
         }
     }
 
-    public void setAlpha (float alpha) {
+    public void setAlpha(float alpha) {
         messageImageView.setAlpha(alpha);
         messageTextView.setAlpha(alpha);
         extraLayout.setAlpha(alpha);
@@ -169,25 +174,24 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         return extraLayout;
     }
 
-    public int maxWidth () {
+    public int maxWidth() {
         return activity.get().getResources().getDimensionPixelSize(R.dimen.message_image_max_width);
     }
 
-    public int maxHeight () {
+    public int maxHeight() {
         return activity.get().getResources().getDimensionPixelSize(R.dimen.message_image_max_height);
     }
 
-    public void showProgressBar () {
+    public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setIndeterminate(true);
         progressBar.bringToFront();
     }
 
-    public void showProgressBar (float progress) {
+    public void showProgressBar(float progress) {
         if (progress == 0) {
             showProgressBar();
-        }
-        else {
+        } else {
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setIndeterminate(false);
             progressBar.setMax(100);
@@ -196,7 +200,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         }
     }
 
-    public void hideProgressBar () {
+    public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 
@@ -217,14 +221,14 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         messageImageView.requestLayout();
     }
 
-    public void setBubbleHidden (boolean hidden) {
+    public void setBubbleHidden(boolean hidden) {
         messageBubble.setVisibility(hidden ? View.INVISIBLE : View.VISIBLE);
         messageBubble.getLayoutParams().width = hidden ? 0 : ViewGroup.LayoutParams.WRAP_CONTENT;
         messageBubble.getLayoutParams().height = hidden ? 0 : ViewGroup.LayoutParams.WRAP_CONTENT;
         messageBubble.requestLayout();
     }
 
-    public void setIconHidden (boolean hidden) {
+    public void setIconHidden(boolean hidden) {
         messageIconView.setVisibility(hidden ? View.INVISIBLE : View.VISIBLE);
         if (hidden) {
             setIconSize(0, 0);
@@ -234,7 +238,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         messageBubble.requestLayout();
     }
 
-    public void setImageHidden (boolean hidden) {
+    public void setImageHidden(boolean hidden) {
         messageImageView.setVisibility(hidden ? View.INVISIBLE : View.VISIBLE);
         if (hidden) {
             setImageSize(0, 0);
@@ -245,14 +249,13 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
 
     }
 
-    public void setTextHidden (boolean hidden) {
+    public void setTextHidden(boolean hidden) {
         messageTextView.setVisibility(hidden ? View.INVISIBLE : View.VISIBLE);
         ConstraintLayout.LayoutParams textLayoutParams = (ConstraintLayout.LayoutParams) messageTextView.getLayoutParams();
-        if(hidden) {
+        if (hidden) {
             textLayoutParams.width = 0;
             textLayoutParams.height = 0;
-        }
-        else {
+        } else {
             textLayoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             textLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         }
@@ -261,7 +264,7 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
         messageBubble.requestLayout();
     }
 
-    public View viewForClassType (Class classType) {
+    public View viewForClassType(Class classType) {
         for (int i = 0; i < extraLayout.getChildCount(); i++) {
             View view = extraLayout.getChildAt(i);
             if (classType.isInstance(view)) {
@@ -328,6 +331,24 @@ public class BaseMessageViewHolder extends AbstractMessageViewHolder {
 
         } else {
             timeTextView.setVisibility(View.VISIBLE);
+            /*if (mActivity != null) {
+                Drawable drawable = null;
+                if (message.getSender().isMe()) {
+                    drawable = ContextCompat.getDrawable(mActivity, R.drawable.bubble_right_rounded1);
+                } else if (!message.getSender().isMe()) {
+                    drawable = ContextCompat.getDrawable(mActivity, R.drawable.bubble_left_rounded1);
+                }
+
+                if (drawable != null) {
+                    messageBubble.setBackground(drawable);
+                }
+            }*/
+        }
+    }
+
+    private void setMessageBubbleBackground(Drawable drawable) {
+        if (drawable != null) {
+            messageBubble.setBackground(drawable);
         }
     }
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">0.0dip</item>
+        <item name="android:dropDownHorizontalOffset">1.0dip</item>
+    </style>
+</resources>

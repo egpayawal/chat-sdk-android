@@ -6,9 +6,9 @@
     android:animateLayoutChanges="true"
     android:background="@drawable/send_message_border"
     android:orientation="horizontal"
-    android:paddingLeft="16dp"
+    android:paddingLeft="17dp"
     android:paddingTop="10dp"
-    android:paddingRight="16dp"
+    android:paddingRight="10dp"
     android:paddingBottom="10dp">
 
     <RelativeLayout
@@ -19,11 +19,11 @@
         android:background="@drawable/bg_rounded">
 
         <FrameLayout
-            android:layout_toLeftOf="@id/button_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@id/button_options"
             android:layout_weight="1">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -45,6 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/access_message_option_button"
@@ -56,9 +57,9 @@
         android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="10dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:gravity="center"
         android:src="@drawable/ic_36_mic" />

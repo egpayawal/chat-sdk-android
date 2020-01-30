@@ -20,6 +20,13 @@
         <item name="android:windowBackground">@color/colorPrimaryDark</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="actionOverflowMenuStyle">@style/PopupMenu</item>
+    </style>
+
+    <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for pre-Lollipop. -->
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">-4.0dip</item>
     </style>
 
     <style name="OverFlow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
@@ -122,18 +129,18 @@
 
     <style name="TextViewNormalH1" parent="@android:style/TextAppearance.Widget.TextView">
         <item name="android:textSize">14sp</item>
-        <item name="android:maxLines">1</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="TextViewSubNormalH1" parent="@android:style/TextAppearance.Widget.TextView">
-        <item name="android:textSize">14sp</item>
-        <item name="android:maxLines">1</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:maxLines">1</item>
     </style>
-
+  
 </resources>
