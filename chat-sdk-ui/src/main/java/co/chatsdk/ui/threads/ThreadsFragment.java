@@ -2,6 +2,8 @@ package co.chatsdk.ui.threads;
 
 import android.os.Bundle;
 import androidx.annotation.LayoutRes;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
@@ -13,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +84,13 @@ public abstract class ThreadsFragment extends BaseFragment {
     public void initViews() {
         searchField = mainView.findViewById(R.id.search_field);
         listThreads = mainView.findViewById(R.id.list_threads);
+        CoordinatorLayout coordinatorLayout = mainView.findViewById(R.id.coordinator);
+        AppBarLayout appBarLayout = mainView.findViewById(R.id.bar_layout);
+
+        if (ChatSDK.config().chatThreadListBackground != 0 && getActivity() != null) {
+            coordinatorLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), ChatSDK.config().chatThreadListBackground));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), ChatSDK.config().chatThreadListBackground));
+        }
 
         adapter = new ThreadsListAdapter(getActivity());
 
@@ -101,7 +112,12 @@ public abstract class ThreadsFragment extends BaseFragment {
         if (allowThreadCreation()) {
             addMenuItem = menu.add(Menu.NONE, R.id.action_add, 10, getString(R.string.thread_fragment_add_item_text));
             addMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            addMenuItem.setIcon(R.drawable.ic_plus);
+
+            if (ChatSDK.config().chatThreadListRightIconDrawable != 0 && getActivity() != null) {
+                addMenuItem.setIcon(ContextCompat.getDrawable(getActivity(), ChatSDK.config().chatThreadListRightIconDrawable));
+            } else {
+                addMenuItem.setIcon(R.drawable.ic_plus);
+            }
         }
     }
 

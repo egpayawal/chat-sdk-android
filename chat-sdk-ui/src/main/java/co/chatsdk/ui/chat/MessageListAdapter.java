@@ -7,10 +7,10 @@
 
 package co.chatsdk.ui.chat;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,12 +21,12 @@ import co.chatsdk.core.base.AbstractMessageViewHolder;
 import co.chatsdk.core.dao.DaoCore;
 import co.chatsdk.core.dao.Message;
 import co.chatsdk.core.interfaces.MessageDisplayHandler;
+import co.chatsdk.core.message_action.MessageAction;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.types.MessageSendStatus;
 import co.chatsdk.core.types.MessageType;
 import co.chatsdk.core.types.Progress;
 import co.chatsdk.ui.chat.handlers.TextMessageDisplayHandler;
-import co.chatsdk.core.message_action.MessageAction;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
