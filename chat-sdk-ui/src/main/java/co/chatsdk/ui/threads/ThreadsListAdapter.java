@@ -10,8 +10,6 @@ package co.chatsdk.ui.threads;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.format.DateFormat;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,15 +84,29 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
 
         Message lastMessage = thread.lastMessage();
         if (lastMessage != null) {
-             Log.e("DEBUG", "getLastMessageDateAsString:: " + getLastMessageDateAsString(lastMessage.getDate().toDate()));
             String dateTime = getTimeFormat(getLastMessageDateAsString(lastMessage.getDate().toDate())/*"10:28 1/01/20"*/);
             holder.dateTextView.setText(dateTime);
 
             String message = "";
             if (lastMessage.getSender().isMe()) {
-                message = message + "You: " + getLastMessageText(thread.lastMessage());
+
+                String lastMsg = getLastMessageText(thread.lastMessage());
+
+                if (lastMsg.equalsIgnoreCase("Image")) {
+                    message = message + "You sent a photo";
+                } else {
+                    message = message + "You: " + getLastMessageText(thread.lastMessage());
+                }
+
             } else {
-                message = getLastMessageText(thread.lastMessage());
+
+                String lastMsg = getLastMessageText(thread.lastMessage());
+
+                if (lastMsg.equalsIgnoreCase("Image")) {
+                    message = message + "Sent a photo";
+                } else {
+                    message = getLastMessageText(thread.lastMessage());
+                }
             }
             holder.lastMessageTextView.setText(message);
 
@@ -157,7 +169,7 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
         return null;
     }
 
-    public String getLastMessageText (Message lastMessage) {
+    public String getLastMessageText(Message lastMessage) {
         String messageText = "";//Strings.t(R.string.no_messages);
         if (lastMessage != null) {
             messageText = Strings.payloadAsString(lastMessage);
