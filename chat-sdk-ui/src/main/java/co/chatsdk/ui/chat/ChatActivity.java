@@ -171,13 +171,11 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                     // Check if the text from the current user, If so return so we wont vibrate for the user messages.
                     if (message.getSender().isMe() && isAdded) {
                         scrollListTo(ListPosition.Bottom, layoutManager().findLastVisibleItemPosition() > messageListAdapter.size() - 2);
-                        Log.e("DEBUG", "SCROLL 1");
                     }
                     else {
                         // If the user is near the bottom, then we scroll down when a text comes in
                         if(layoutManager().findLastVisibleItemPosition() > messageListAdapter.size() - 5) {
                             scrollListTo(ListPosition.Bottom, true);
-                            Log.e("DEBUG", "SCROLL 2");
                         }
                     }
                     if(ChatSDK.readReceipts() != null) {
@@ -243,7 +241,6 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                         if (ChatSDK.encryption() == null) {
                             if(messageListAdapter.addRow(progress.message, false, true, progress.uploadProgress, true)) {
                                 scrollListTo(ListPosition.Bottom, false);
-                                Log.e("DEBUG", "SCROLL 3");
                             }
                         }
                     }

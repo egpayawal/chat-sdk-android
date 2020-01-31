@@ -22,6 +22,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
+            android:fontFamily="@font/roboto_medium"
             android:gravity="center_vertical"
             android:padding="2dp"
             android:singleLine="true"
@@ -51,11 +52,12 @@
             android:id="@+id/text_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="0dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Lorem Ipsum"
             android:textColor="#7F94AC"
             android:textSize="12sp"
-            android:text="Lorem Ipsum"
             app:layout_constraintLeft_toRightOf="@+id/image_avatar"
             app:layout_constraintTop_toBottomOf="@+id/text_name" />
 

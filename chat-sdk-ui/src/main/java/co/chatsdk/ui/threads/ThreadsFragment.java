@@ -6,7 +6,10 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,6 +75,18 @@ public abstract class ThreadsFragment extends BaseFragment {
 
         initViews();
 
+        final Handler handler = new Handler();
+        handler.postDelayed( new Runnable() {
+
+            @Override
+            public void run() {
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                    handler.postDelayed( this, 60 * 1000 );
+                }
+            }
+        }, 60 * 1000 );
+
         return mainView;
     }
 
@@ -100,6 +115,10 @@ public abstract class ThreadsFragment extends BaseFragment {
         Disposable d = adapter.onClickObservable().subscribe(thread -> {
             ChatSDK.ui().startChatActivityForID(getContext(), thread.getEntityID());
         });
+
+        if (!TextUtils.isEmpty(ChatSDK.config().chatThreadListSearchText)) {
+            searchField.setHint(ChatSDK.config().chatThreadListSearchText);
+        }
     }
 
     protected boolean allowThreadCreation () {

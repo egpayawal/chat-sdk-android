@@ -9,6 +9,9 @@ package co.chatsdk.ui.threads;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +21,14 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import co.chatsdk.core.dao.Message;
 import co.chatsdk.core.dao.Thread;
@@ -80,7 +86,9 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
 
         Message lastMessage = thread.lastMessage();
         if (lastMessage != null) {
-            holder.dateTextView.setText(getLastMessageDateAsString(lastMessage.getDate().toDate()));
+             Log.e("DEBUG", "getLastMessageDateAsString:: " + getLastMessageDateAsString(lastMessage.getDate().toDate()));
+            String dateTime = getTimeFormat(getLastMessageDateAsString(lastMessage.getDate().toDate())/*"10:28 1/01/20"*/);
+            holder.dateTextView.setText(dateTime);
 
             String message = "";
             if (lastMessage.getSender().isMe()) {
@@ -104,7 +112,7 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
         if (unreadMessageCount != 0 && (thread.typeIs(ThreadType.Private) || ChatSDK.config().unreadMessagesCountForPublicChatRoomsEnabled)) {
 
             holder.unreadMessageCountTextView.setText(String.valueOf(unreadMessageCount));
-            holder.unreadMessageCountTextView.setVisibility(View.VISIBLE);
+            //holder.unreadMessageCountTextView.setVisibility(View.VISIBLE);
 
             // Modify Name and Last Message Text Color
             if (ChatSDK.config().chatThreadNameUnReadColor != 0 && context != null) {
@@ -120,7 +128,7 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
             // holder.showUnreadIndicator();
         } else {
             // holder.hideUnreadIndicator();
-            holder.unreadMessageCountTextView.setVisibility(View.INVISIBLE);
+            // holder.unreadMessageCountTextView.setVisibility(View.INVISIBLE);
 
             // Modify Name and Last Message Text Color
             if (ChatSDK.config().chatThreadNameUnReadColor != 0 &&
@@ -133,6 +141,10 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
                 holder.nameTextView.setTypeface(mTypefaceNormal);
                 holder.lastMessageTextView.setTypeface(mTypefaceNormal);
             }
+        }
+
+        if (ChatSDK.config().chatThreadListTimeColor != 0 && context != null) {
+            holder.dateTextView.setTextColor(ContextCompat.getColor(context.get(), ChatSDK.config().chatThreadListTimeColor));
         }
 
         ThreadImageBuilder.load(holder.imageView, thread);
@@ -232,5 +244,65 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
         updateThreads(threads);
     }
 
+    private String getTimeFormat(String dateTime) {
+        String convTime = "";
+
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm dd/MM/yy");
+            Date past = format.parse(dateTime);
+            Date now = new Date();
+
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(now.getTime() - past.getTime());
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(now.getTime() - past.getTime());
+            long hours = TimeUnit.MILLISECONDS.toHours(now.getTime() - past.getTime());
+            long days = TimeUnit.MILLISECONDS.toDays(now.getTime() - past.getTime());
+
+            String suffix = "ago";
+
+            if (seconds < 60) {
+                convTime = seconds + "s " + suffix;
+            } else if (minutes < 60) {
+                convTime = minutes + "m " + suffix;
+            } else if (hours < 24) {
+                convTime = hours + "h " + suffix;
+            } else if (hours > 24 && hours < 48) {
+                convTime = "Yesterday";
+            } else if (days >= 7) {
+                /*if (days > 360) {
+                    convTime = (days / 30) + " Years " + suffix;
+                    // Log.e("DEBUG", "----> YEARS " + getFormattedDate(past.getTime()));
+                    convTime = getFormattedDate(past.getTime());
+                } else if (days > 30) {
+                    convTime = (days / 360) + " Months " + suffix;
+                    // Log.e("DEBUG", "----> MONTHS " + getFormattedDate(past.getTime()));
+                    convTime = getFormattedDate(past.getTime());
+                } else {
+//                    convTime = (days / 7) + " Week " + suffix;
+                    convTime = getFormattedDate(past.getTime());
+                }*/
+                convTime = getFormattedDate(past.getTime());
+            } else if (days < 7) {
+                convTime = days + "d " + suffix;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return convTime;
+    }
+
+    protected String getFormattedDate(long milliSeconds) {
+        Calendar smsTime = Calendar.getInstance();
+        smsTime.setTimeInMillis(milliSeconds);
+
+        Calendar now = Calendar.getInstance();
+
+        if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
+            return DateFormat.format("MMM dd", smsTime).toString();
+        } else {
+            return DateFormat.format("MMM dd, yyyy", smsTime).toString();
+        }
+    }
 
 }

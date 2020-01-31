@@ -190,6 +190,8 @@ public class Configuration {
     public int chatThreadNameUnReadColor;
     public int chatThreadLastMessageUnReadColor;
     public int chatThreadLastMessageReadColor;
+    public int chatThreadListTimeColor;
+    public String chatThreadListSearchText;
 
     public Configuration () {
         searchIndexes.add(Keys.Name);
@@ -791,6 +793,16 @@ public class Configuration {
 
         public Builder setChatThreadLastMessageReadColor(int color) {
             config.chatThreadLastMessageReadColor = color;
+            return this;
+        }
+
+        public Builder setChatThreadListTimeColor(int color) {
+            config.chatThreadListTimeColor = color;
+            return this;
+        }
+
+        public Builder setChatThreadListSearchText(String hint) {
+            config.chatThreadListSearchText = hint;
             return this;
         }
 

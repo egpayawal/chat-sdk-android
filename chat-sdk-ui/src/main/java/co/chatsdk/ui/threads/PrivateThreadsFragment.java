@@ -7,6 +7,7 @@
 
 package co.chatsdk.ui.threads;
 
+import android.os.Bundle;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -71,6 +72,16 @@ public class PrivateThreadsFragment extends ThreadsFragment {
     @Override
     protected List<Thread> getThreads() {
         return ChatSDK.thread().getThreads(ThreadType.Private);
+    }
+
+    public static PrivateThreadsFragment newInstance() {
+        PrivateThreadsFragment fragment = new PrivateThreadsFragment();
+//        Bundle args = new Bundle();
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
+//        args.putInt(ARG_PARAM3, param3);
+//        fragment.setArguments(args);
+        return fragment;
     }
 
 }
