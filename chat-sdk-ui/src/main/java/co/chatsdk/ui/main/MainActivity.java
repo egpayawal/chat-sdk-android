@@ -9,6 +9,7 @@ package co.chatsdk.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import co.chatsdk.core.dao.Keys;
 import co.chatsdk.core.events.EventType;
 import co.chatsdk.core.events.NetworkEvent;
@@ -46,7 +47,9 @@ public abstract class MainActivity extends BaseActivity {
 
         disposableList.add(ChatSDK.events().sourceOnMain()
                 .filter(NetworkEvent.filterType(EventType.Logout))
-                .subscribe(networkEvent -> clearData()));
+                .subscribe(networkEvent -> {
+                    clearData();
+                }));
 
         updateLocalNotificationsForTab();
         reloadData();

@@ -1,12 +1,7 @@
 package co.chatsdk.ui.threads;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.LayoutRes;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,6 +13,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import androidx.annotation.LayoutRes;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 
@@ -45,7 +47,6 @@ public abstract class ThreadsFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
@@ -55,7 +56,7 @@ public abstract class ThreadsFragment extends BaseFragment {
         disposableList.add(ChatSDK.events().sourceOnMain()
                 .filter(mainEventFilter())
                 .subscribe(networkEvent -> {
-                    if (tabIsVisible) {
+                    if (tabIsVisible || ChatSDK.config().isMenu) {
                         reloadData();
                     }
                 }));
@@ -63,7 +64,7 @@ public abstract class ThreadsFragment extends BaseFragment {
         disposableList.add(ChatSDK.events().sourceOnMain()
                 .filter(NetworkEvent.filterType(EventType.TypingStateChanged))
                 .subscribe(networkEvent -> {
-                    if (tabIsVisible) {
+                    if (tabIsVisible || ChatSDK.config().isMenu) {
                         adapter.setTyping(networkEvent.thread, networkEvent.text);
                         adapter.notifyDataSetChanged();
                     }
@@ -101,6 +102,11 @@ public abstract class ThreadsFragment extends BaseFragment {
         listThreads = mainView.findViewById(R.id.list_threads);
         CoordinatorLayout coordinatorLayout = mainView.findViewById(R.id.coordinator);
         AppBarLayout appBarLayout = mainView.findViewById(R.id.bar_layout);
+
+        if (getActivity() != null) {
+            Typeface typefaceNormal = ResourcesCompat.getFont(getActivity(), R.font.roboto_regular);
+            searchField.setTypeface(typefaceNormal);
+        }
 
         if (ChatSDK.config().chatThreadListBackground != 0 && getActivity() != null) {
             coordinatorLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), ChatSDK.config().chatThreadListBackground));

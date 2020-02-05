@@ -192,6 +192,7 @@ public class Configuration {
     public int chatThreadLastMessageReadColor;
     public int chatThreadListTimeColor;
     public String chatThreadListSearchText;
+    public boolean isMenu;
 
     public Configuration () {
         searchIndexes.add(Keys.Name);
@@ -803,6 +804,11 @@ public class Configuration {
 
         public Builder setChatThreadListSearchText(String hint) {
             config.chatThreadListSearchText = hint;
+            return this;
+        }
+
+        public Builder setPrivateFragmentAsMenu(boolean isMenu) {
+            config.isMenu = isMenu;
             return this;
         }
 

@@ -86,6 +86,7 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
         if (lastMessage != null) {
             String dateTime = getTimeFormat(getLastMessageDateAsString(lastMessage.getDate().toDate())/*"10:28 1/01/20"*/);
             holder.dateTextView.setText(dateTime);
+            holder.dateTextView.setTypeface(mTypefaceNormal);
 
             String message = "";
             if (lastMessage.getSender().isMe()) {

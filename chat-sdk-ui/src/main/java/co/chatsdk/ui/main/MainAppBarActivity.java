@@ -2,15 +2,15 @@ package co.chatsdk.ui.main;
 
 import android.os.Bundle;
 
+import androidx.annotation.LayoutRes;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
-import androidx.annotation.LayoutRes;
-import androidx.viewpager.widget.ViewPager;
 import co.chatsdk.core.Tab;
 import co.chatsdk.core.dao.Thread;
-import co.chatsdk.core.interfaces.LocalNotificationHandler;
 import co.chatsdk.core.interfaces.ThreadType;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.ui.R;
