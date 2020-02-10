@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_rounded"
+            android:background="@android:color/white"
             android:drawableLeft="@drawable/ic_search"
             android:drawablePadding="10dp"
             android:hint="@string/search_threads"

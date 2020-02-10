@@ -35,7 +35,7 @@
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/bg_rounded"
+                    android:background="@android:color/white"
                     android:drawableLeft="@drawable/ic_search"
                     android:drawablePadding="10dp"
                     android:hint="@string/search_threads"
