@@ -97,6 +97,10 @@
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/ChatSDKSlidingTransactionTheme"/>
 
+        <activity android:name=".threads.UserCreateThreadActivity"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/SdkTheme.NoActionBar"/>
+
         <!--Crop image-->
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

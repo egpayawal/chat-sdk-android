@@ -201,7 +201,7 @@ public abstract class ThreadsFragment extends BaseFragment {
 
     protected abstract List<Thread> getThreads ();
 
-    public List<Thread> filter (List<Thread> threads) {
+    public List<Thread> filter(List<Thread> threads) {
         if (filter == null || filter.isEmpty()) {
             return threads;
         }
@@ -210,8 +210,7 @@ public abstract class ThreadsFragment extends BaseFragment {
         for (Thread t : threads) {
             if (t.getName() != null && t.getName().toLowerCase().contains(filter.toLowerCase())) {
                 filteredThreads.add(t);
-            }
-            else {
+            } else {
                 for (User u : t.getUsers()) {
                     if (u.getName() != null && u.getName().toLowerCase().contains(filter.toLowerCase())) {
                         filteredThreads.add(t);

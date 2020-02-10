@@ -191,7 +191,10 @@ public class Configuration {
     public int chatThreadLastMessageUnReadColor;
     public int chatThreadLastMessageReadColor;
     public int chatThreadListTimeColor;
+    public int chatCreateThreadHeaderTextColor;
     public String chatThreadListSearchText;
+    public String toolbarText;
+    public int toolbarTextColor;
     public boolean isMenu;
 
     public Configuration () {
@@ -811,6 +814,22 @@ public class Configuration {
             config.isMenu = isMenu;
             return this;
         }
+
+        public Builder setChatCreateThreadHeaderTextColor(int color) {
+            config.chatCreateThreadHeaderTextColor = color;
+            return this;
+        }
+
+        public Builder setToolbarTitleText(String args) {
+            config.toolbarText = args;
+            return this;
+        }
+
+        public Builder setToolbarTitleTextColor(int color) {
+            config.toolbarTextColor = color;
+            return this;
+        }
+
 
         /**
          * @deprecated use {@link #publicChatAutoSubscriptionEnabled(boolean)}

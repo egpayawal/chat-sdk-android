@@ -58,10 +58,12 @@ import co.chatsdk.ui.profile.EditProfileActivity;
 import co.chatsdk.ui.profile.ProfileActivity;
 import co.chatsdk.ui.profile.ProfileFragment;
 import co.chatsdk.ui.search.SearchActivity;
+import co.chatsdk.ui.threads.CreateThreadFragment;
 import co.chatsdk.ui.threads.PrivateThreadsFragment;
 import co.chatsdk.ui.threads.ThreadEditDetailsActivity;
 import co.chatsdk.ui.threads.PublicThreadsFragment;
 import co.chatsdk.ui.threads.ThreadDetailsActivity;
+import co.chatsdk.ui.threads.UserCreateThreadActivity;
 
 public class BaseInterfaceAdapter implements InterfaceAdapter {
 
@@ -86,6 +88,7 @@ public class BaseInterfaceAdapter implements InterfaceAdapter {
     protected Class editProfileActivity = EditProfileActivity.class;
     protected Class profileActivity = ProfileActivity.class;
     protected Class createThreadActivity = CreateThreadActivity.class;
+    protected Class userCreateThreadActivity = UserCreateThreadActivity.class;
     protected Class addUsersToThreadActivity = AddUsersToThreadActivity.class;
     protected Class forwardMessageActivity = ForwardMessageActivity.class;
 
@@ -95,6 +98,7 @@ public class BaseInterfaceAdapter implements InterfaceAdapter {
     protected Fragment publicThreadsFragment = new PublicThreadsFragment();
     protected Fragment contactsFragment = new ContactsFragment();
     protected ProfileFragmentProvider profileFragmentProvider = ProfileFragment::newInstance;
+    protected Fragment createThreadFragment = new CreateThreadFragment();
 
     private ArrayList<Tab> tabs = new ArrayList<>();
     private Tab privateThreadsTab;
@@ -224,6 +228,16 @@ public class BaseInterfaceAdapter implements InterfaceAdapter {
     }
 
     @Override
+    public Fragment createThreadFragment() {
+        return createThreadFragment;
+    }
+
+    @Override
+    public void setCreateThreadFragment(Fragment createThreadFragment) {
+        this.createThreadFragment = createThreadFragment;
+    }
+
+    @Override
     public Fragment publicThreadsFragment() {
         return publicThreadsFragment;
     }
@@ -329,6 +343,11 @@ public class BaseInterfaceAdapter implements InterfaceAdapter {
     }
 
     @Override
+    public Class getUserCreateThreadActivity() {
+        return userCreateThreadActivity;
+    }
+
+    @Override
     public Class getForwardMessageActivity() {
         return forwardMessageActivity;
     }
@@ -341,6 +360,11 @@ public class BaseInterfaceAdapter implements InterfaceAdapter {
     @Override
     public void setCreateThreadActivity(Class createThreadActivity) {
         this.createThreadActivity = createThreadActivity;
+    }
+
+    @Override
+    public void setUserCreateThreadActivity(Class userCreateThreadActivity) {
+        this.userCreateThreadActivity = userCreateThreadActivity;
     }
 
     @Override
@@ -506,6 +530,11 @@ public class BaseInterfaceAdapter implements InterfaceAdapter {
     @Override
     public void startCreateThreadActivity(Context context) {
         startActivity(context, getCreateThreadActivity());
+    }
+
+    @Override
+    public void startUserCreateThreadActivity(Context context) {
+        startActivity(context, getUserCreateThreadActivity());
     }
 
     @Override

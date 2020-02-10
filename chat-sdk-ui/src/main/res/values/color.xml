@@ -18,5 +18,7 @@
     <color name="anonymous_button_color">#aaaaaa</color>
     <color name="reset_password_button_color">#ffffff</color>
     <color name="logout_button_color">#ae2020</color>
+    <color name="divider">#F2F4F6</color>
+    <color name="greyTransparent">#33DBDBDB</color>
 
 </resources>

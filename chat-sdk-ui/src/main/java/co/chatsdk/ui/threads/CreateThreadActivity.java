@@ -1,13 +1,8 @@
 package co.chatsdk.ui.threads;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.View;
-import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import co.chatsdk.core.dao.Keys;

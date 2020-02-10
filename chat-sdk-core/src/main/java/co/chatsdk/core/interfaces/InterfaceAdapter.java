@@ -25,6 +25,7 @@ import co.chatsdk.core.notifications.NotificationDisplayHandler;
 
 public interface InterfaceAdapter {
 
+    Fragment createThreadFragment();
     Fragment privateThreadsFragment ();
     Fragment publicThreadsFragment ();
     Fragment contactsFragment ();
@@ -38,6 +39,7 @@ public interface InterfaceAdapter {
 
     Class getAddUsersToThreadActivity();
     Class getCreateThreadActivity();
+    Class getUserCreateThreadActivity();
     Class getForwardMessageActivity();
 
     Class getSearchActivity();
@@ -54,11 +56,13 @@ public interface InterfaceAdapter {
     void setForwardMessageActivity (Class forwardMessageActivity);
     void setAddUsersToThreadActivity(Class addUsersToThreadActivity);
     void setCreateThreadActivity(Class createThreadActivity);
+    void setUserCreateThreadActivity(Class userCreateThreadActivity);
 
     void setSearchActivity (Class searchActivity);
     void setEditProfileActivity (Class editProfileActivity);
     void setProfileActivity (Class profileActivity);
 
+    void setCreateThreadFragment(Fragment createThreadFragment);
     void setPrivateThreadsFragment (Fragment privateThreadsFragment);
     void setPublicThreadsFragment (Fragment publicThreadsFragment);
     void setContactsFragment (Fragment contactsFragment);
@@ -108,6 +112,7 @@ public interface InterfaceAdapter {
 
     void startAddUsersToThreadActivity(Context context);
     void startCreateThreadActivity(Context context);
+    void startUserCreateThreadActivity(Context context);
 
     void startSplashScreenActivity (Context context);
 
