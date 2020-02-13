@@ -8,8 +8,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!--SEPARATOR-->
+    <TextView
+        android:id="@+id/text_chat_beginning"
+        style="@style/TextViewSubNormalH2"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:padding="10dp"
+        android:visibility="gone"
+        android:text="This is the beginning of your direct message history with Klemen Selakovic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <!--SEPARATOR-->
     <RelativeLayout
         android:id="@+id/container_time_divider"
         android:layout_width="match_parent"

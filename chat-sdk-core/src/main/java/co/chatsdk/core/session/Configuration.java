@@ -182,6 +182,7 @@ public class Configuration {
     public int chatOptionIconDrawable;
     public int chatInputHintFontColor;
     public int chatInputFontColor;
+    public int chatCommonalityColor;
     public String chatInputHint;
     public boolean isMessageMeVisible = true;
     public int chatMoreIconDrawable;
@@ -757,6 +758,11 @@ public class Configuration {
 
         public Builder setChatInputFontColor(int color) {
             config.chatInputFontColor = color;
+            return this;
+        }
+
+        public Builder setChatCommonalityColor(int color) {
+            config.chatCommonalityColor = color;
             return this;
         }
 

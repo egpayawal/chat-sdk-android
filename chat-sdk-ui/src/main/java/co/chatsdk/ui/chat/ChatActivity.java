@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -106,6 +105,7 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
     protected TextView subtitleTextView;
     protected SimpleDraweeView threadImageView;
     protected Disposable typingTimerDisposable;
+    protected TextView commonalitiesTextView;
 
     protected ProgressBar progressBar;
     protected int listPos = -1;
@@ -128,6 +128,7 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
     protected boolean scrolling = false;
 
     protected Toolbar mToolbar;
+    protected boolean isTop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -325,6 +326,17 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         if (titleTextView != null) {
             titleTextView.setText(displayName);
         }
+
+        if (commonalitiesTextView != null) {
+            String commonality = getString(R.string.text_commonalities);
+            commonality = commonality + " " + displayName;
+            commonalitiesTextView.setText(commonality);
+            if (ChatSDK.config().chatCommonalityColor != 0) {
+                int color = ContextCompat.getColor(this, ChatSDK.config().chatCommonalityColor);
+                commonalitiesTextView.setTextColor(color);
+            }
+        }
+
         ThreadImageBuilder.load(threadImageView, thread);
     }
 
@@ -355,6 +367,7 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
             }
         });
 
+        commonalitiesTextView = findViewById(R.id.textview_commonalities);
         recyclerView = findViewById(R.id.recycler_messages);
         nestedScrollView = findViewById(R.id.nestedScrollView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -446,7 +459,8 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                     int lastVisible = layoutManager().findLastVisibleItemPosition();
 
                     if (addedCount > 0 && saveScrollPosition) {
-                        scrollListTo(messages.size() + lastVisible - firstVisible, false);
+                        isTop = true;
+                        scrollListTop(messages.size() + lastVisible - firstVisible, false);
                     }
 
                     firstVisible = layoutManager().findFirstVisibleItemPosition();
@@ -894,33 +908,47 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         listPos = position;
 
         if (animated) {
-//            recyclerView.smoothScrollToPosition(listPos);
             nestedScrollView.smoothScrollTo(0, listPos);
-        }
-        else {
-//            recyclerView.getLayoutManager().scrollToPosition(listPos);
+        } else {
             nestedScrollView.fling(0);
             nestedScrollView.scrollTo(0, recyclerView.getBottom());
         }
     }
 
-    public void scrollListTo(final ListPosition position, final boolean animated) {
-
+    public void scrollListTo(ListPosition position, final boolean animated) {
         int pos = 0;
+
+        if (isTop) {
+            isTop = false;
+            position = ListPosition.Top;
+        }
 
         switch (position) {
             case Top:
                 pos = 0;
+                scrollListTop(pos, animated);
                 break;
             case Current:
                 pos = listPos == -1 ? messageListAdapter.size() - 1 : listPos;
+                scrollListTo(pos, animated);
                 break;
             case Bottom:
                 pos = messageListAdapter.size() - 1;
+                scrollListTo(pos, animated);
                 break;
         }
 
-        scrollListTo(pos, animated);
+//        scrollListTo(pos, animated);
+    }
+
+    private void scrollListTop(final int position, final boolean animated) {
+        listPos = position;
+
+        if (animated) {
+            recyclerView.smoothScrollToPosition(position);
+        } else {
+            recyclerView.getLayoutManager().scrollToPosition(position);
+        }
     }
 
     @Override

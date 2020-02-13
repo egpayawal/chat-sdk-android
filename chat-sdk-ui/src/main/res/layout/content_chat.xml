@@ -83,6 +83,18 @@
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/textview_commonalities"
+                        style="@style/TextViewSubNormalH2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="25dp"
+                        android:padding="10dp"
+                        android:text="This is the beginning of your direct message history with Klemen Selakovic"
+                        android:visibility="visible" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_messages"
                         android:layout_width="match_parent"
