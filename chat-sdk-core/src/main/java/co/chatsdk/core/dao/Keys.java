@@ -11,6 +11,8 @@ public class Keys {
 
     /* Metadata */
     public static final String Email = "email";
+    public static final String UserID = "userID";
+    public static final String UserEnabledDM = "userEnabledDM";
     public static final String Key = "key";
     public static final String Value = "value";
     public static final String Phone = "phone";

@@ -67,6 +67,11 @@ public class UserWrapper {
         User model = ChatSDK.db().fetchOrCreateEntityWithEntityID(User.class, entityId);
         return initWithModel(model);
     }
+
+    public static UserWrapper initWithFirebaseUID(String firebaseUID) {
+        User model = ChatSDK.db().fetchOrCreateEntityWithEntityID(User.class, firebaseUID);
+        return initWithModel(model);
+    }
     
     private UserWrapper(FirebaseUser authData){
         model = ChatSDK.db().fetchOrCreateEntityWithEntityID(User.class, authData.getUid());
