@@ -630,15 +630,21 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
             String userID = thread.otherUser().getUserId();
 
             if (!TextUtils.isEmpty(entityID)) {
-                disposableList.add(ChatSDK.thread().deleteThread(thread)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(() -> {
-                            Log.e("DEBUG", "DELETED THREAD:: ");
-                        }));
+                deleteThread();
             }
             return userID;
         }
         return null;
+    }
+
+    protected void deleteThread() {
+        if (thread != null) {
+            disposableList.add(ChatSDK.thread().deleteThread(thread)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                        Log.e("DEBUG", "DELETED THREAD:: ");
+                    }));
+        }
     }
 
     /**
