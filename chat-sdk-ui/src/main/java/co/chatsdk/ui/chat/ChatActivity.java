@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -621,6 +622,23 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
     protected void onPause() {
         super.onPause();
         hideKeyboard();
+    }
+
+    protected String getUserID() {
+        if (thread != null) {
+            String entityID = thread.otherUser().getEntityID();
+            String userID = thread.otherUser().getUserId();
+
+            if (!TextUtils.isEmpty(entityID)) {
+                disposableList.add(ChatSDK.thread().deleteThread(thread)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                            Log.e("DEBUG", "DELETED THREAD:: ");
+                        }));
+            }
+            return userID;
+        }
+        return null;
     }
 
     /**
