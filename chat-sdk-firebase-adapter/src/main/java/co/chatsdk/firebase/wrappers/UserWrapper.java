@@ -86,6 +86,18 @@ public class UserWrapper {
         model = ChatSDK.db().fetchOrCreateEntityWithEntityID(User.class, snapshot.getKey());
         deserialize((Map<String, Object>) snapshot.getValue());
     }
+
+    public static UserWrapper updateUser(String firebaseUID) {
+        User model = ChatSDK.db().fetchOrCreateEntityWithEntityID(User.class, firebaseUID);
+        model.setEntityID(firebaseUID);
+        return initWithModel(model);
+    }
+
+    public void updateUserFromUID(String firebaseUID) {
+        model.setEntityID(firebaseUID);
+
+        model.update();
+    }
     
     /**
      * Note - Change was removing of online values as set online and online time.

@@ -10,6 +10,7 @@ package co.chatsdk.ui.threads;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,13 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
     public void onBindViewHolder(final ThreadViewHolder holder, int position) {
 
         final Thread thread = threads.get(position);
+//        Log.e("DEBUG", "thread:: " + thread.otherUser());
+
+
+        if (thread != null && thread.otherUser() != null && !thread.otherUser().isEnabledDM()) {
+//            holder.containerThread.setVisibility(View.GONE);
+//            thread.lastMessage().
+        }
 
         holder.nameTextView.setText(Strings.nameForThread(thread));
 
@@ -84,6 +92,11 @@ public class ThreadsListAdapter extends RecyclerView.Adapter<ThreadViewHolder> {
 
         Message lastMessage = thread.lastMessage();
         if (lastMessage != null) {
+
+            boolean isDmEnabled = lastMessage.getSender().isEnabledDM();
+//            holder.containerThread.setVisibility(isDmEnabled ? View.VISIBLE : View.GONE);
+//            Log.e("DEBUG", "thread isEnabledDM:: " + isDmEnabled);
+
             String dateTime = getTimeFormat(getLastMessageDateAsString(lastMessage.getDate().toDate())/*"10:28 1/01/20"*/);
             holder.dateTextView.setText(dateTime);
             holder.dateTextView.setTypeface(mTypefaceNormal);

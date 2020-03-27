@@ -2,6 +2,7 @@ package co.chatsdk.ui.threads;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -20,6 +21,7 @@ public class ThreadViewHolder extends RecyclerView.ViewHolder {
     public TextView unreadMessageCountTextView;
     public SimpleDraweeView imageView;
     public View indicator;
+    public LinearLayout containerThread;
 
     public ThreadViewHolder(View itemView) {
         super(itemView);
@@ -30,6 +32,7 @@ public class ThreadViewHolder extends RecyclerView.ViewHolder {
         imageView = itemView.findViewById(R.id.img_thread_image);
         unreadMessageCountTextView = itemView.findViewById(R.id.txt_unread_messages);
         indicator = itemView.findViewById(R.id.chat_sdk_indicator);
+        containerThread = itemView.findViewById(R.id.container_thread);
 
     }
 
