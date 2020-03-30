@@ -273,6 +273,12 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        deleteEmptyThread();
+        finish();
+    }
+
     protected void initActionBar () {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -644,6 +650,12 @@ public class ChatActivity extends BaseActivity implements TextInputDelegate, Cha
                     .subscribe(() -> {
                         Log.e("DEBUG", "DELETED THREAD:: ");
                     }));
+        }
+    }
+
+    protected void deleteEmptyThread() {
+        if (thread != null && thread.getMessages() != null && thread.getMessages().size() == 0) {
+            deleteThread();
         }
     }
 
