@@ -1,6 +1,7 @@
 package co.chatsdk.ui.threads;
 
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -22,6 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +38,7 @@ import co.chatsdk.core.events.NetworkEvent;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.ui.R;
 import co.chatsdk.ui.main.BaseFragment;
+import co.chatsdk.ui.utils.events.EventData;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 
@@ -43,6 +49,10 @@ public abstract class ThreadsFragment extends BaseFragment {
     protected ThreadsListAdapter adapter;
     protected String filter;
     protected MenuItem addMenuItem;
+    protected LinearLayout containerEmptyState;
+    protected TextView textEmptyStateTitle;
+    protected TextView textEmptyStateMsg;
+    protected TextView btnEmptyState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +110,10 @@ public abstract class ThreadsFragment extends BaseFragment {
     public void initViews() {
         searchField = mainView.findViewById(R.id.search_field);
         listThreads = mainView.findViewById(R.id.list_threads);
+        containerEmptyState = mainView.findViewById(R.id.container_empty_state);
+        textEmptyStateTitle = mainView.findViewById(R.id.text_empty_state_title);
+        textEmptyStateMsg = mainView.findViewById(R.id.text_empty_state_msg);
+        btnEmptyState = mainView.findViewById(R.id.btn_empty_state);
         CoordinatorLayout coordinatorLayout = mainView.findViewById(R.id.coordinator);
         AppBarLayout appBarLayout = mainView.findViewById(R.id.bar_layout);
 
@@ -113,10 +127,34 @@ public abstract class ThreadsFragment extends BaseFragment {
             appBarLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), ChatSDK.config().chatThreadListBackground));
         }
 
+        if (ChatSDK.config().chatThreadEmptyStateIcon != 0 && getActivity() != null) {
+            Drawable drawableTop = ContextCompat.getDrawable(getActivity(), ChatSDK.config().chatThreadEmptyStateIcon);
+            textEmptyStateTitle.setCompoundDrawablesWithIntrinsicBounds(null, drawableTop, null, null);
+        }
+
+        if (!TextUtils.isEmpty(ChatSDK.config().chatThreadEmptyStateTitleText)) {
+            textEmptyStateTitle.setText(ChatSDK.config().chatThreadEmptyStateTitleText);
+        }
+
+        if (!TextUtils.isEmpty(ChatSDK.config().chatThreadEmptyStateMessageText)) {
+            textEmptyStateMsg.setText(ChatSDK.config().chatThreadEmptyStateMessageText);
+        }
+
+        if (!TextUtils.isEmpty(ChatSDK.config().chatThreadEmptyStateButtonText)) {
+            btnEmptyState.setText(ChatSDK.config().chatThreadEmptyStateButtonText);
+        }
+
+        if (ChatSDK.config().chatThreadEmptyStateButtonIcon != 0 && getActivity() != null) {
+            Drawable drawableEnd = ContextCompat.getDrawable(getActivity(), ChatSDK.config().chatThreadEmptyStateButtonIcon);
+            btnEmptyState.setCompoundDrawablesWithIntrinsicBounds(null, null, drawableEnd, null);
+        }
+
         adapter = new ThreadsListAdapter(getActivity());
 
         listThreads.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         listThreads.setAdapter(adapter);
+
+        containerEmptyState.setVisibility(View.GONE);
 
         Disposable d = adapter.onClickObservable().subscribe(thread -> {
             ChatSDK.ui().startChatActivityForID(getContext(), thread.getEntityID());
@@ -124,6 +162,12 @@ public abstract class ThreadsFragment extends BaseFragment {
 
         if (!TextUtils.isEmpty(ChatSDK.config().chatThreadListSearchText)) {
             searchField.setHint(ChatSDK.config().chatThreadListSearchText);
+        }
+
+        if (btnEmptyState != null) {
+            btnEmptyState.setOnClickListener(v -> {
+                EventBus.getDefault().post(new EventData.CreateButtonClickEvent());
+            });
         }
     }
 
@@ -195,6 +239,11 @@ public abstract class ThreadsFragment extends BaseFragment {
         if (adapter != null) {
             adapter.clearData();
             List<Thread> threads = filter(getThreads());
+            boolean showEmptyState = (threads.size() == 0);
+            containerEmptyState.setVisibility(showEmptyState ? View.VISIBLE : View.GONE);
+            listThreads.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
+            searchField.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
+
             adapter.updateThreads(threads);
         }
     }
@@ -221,4 +270,5 @@ public abstract class ThreadsFragment extends BaseFragment {
         }
         return filteredThreads;
     }
+
 }

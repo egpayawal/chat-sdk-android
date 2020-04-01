@@ -193,6 +193,11 @@ public class Configuration {
     public int chatThreadLastMessageReadColor;
     public int chatThreadListTimeColor;
     public int chatCreateThreadHeaderTextColor;
+    public int chatThreadEmptyStateIcon;
+    public String chatThreadEmptyStateTitleText;
+    public String chatThreadEmptyStateMessageText;
+    public String chatThreadEmptyStateButtonText;
+    public int chatThreadEmptyStateButtonIcon;
     public String chatThreadListSearchText;
     public String toolbarText;
     public int toolbarTextColor;
@@ -836,6 +841,30 @@ public class Configuration {
             return this;
         }
 
+        public Builder setChatThreadEmptyStateIcon(int drawable) {
+            config.chatThreadEmptyStateIcon = drawable;
+            return this;
+        }
+
+        public Builder setChatThreadEmptyStateTitleText(String text) {
+            config.chatThreadEmptyStateTitleText = text;
+            return this;
+        }
+
+        public Builder setChatThreadEmptyStateMessageText(String text) {
+            config.chatThreadEmptyStateMessageText = text;
+            return this;
+        }
+
+        public Builder setChatThreadEmptyStateButtonText(String text) {
+            config.chatThreadEmptyStateButtonText = text;
+            return this;
+        }
+
+        public Builder setChatThreadEmptyStateButtonIcon(int drawable) {
+            config.chatThreadEmptyStateButtonIcon = drawable;
+            return this;
+        }
 
         /**
          * @deprecated use {@link #publicChatAutoSubscriptionEnabled(boolean)}
