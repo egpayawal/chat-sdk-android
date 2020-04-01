@@ -10,6 +10,17 @@ public class EventData {
 
         public CreateButtonClickEvent() {
         }
+
+    }
+
+    public static class UnreadMessageCountEvent {
+
+        public final int unreadMessageCount;
+
+        public UnreadMessageCountEvent(int unreadMessageCount) {
+            this.unreadMessageCount = unreadMessageCount;
+        }
+
     }
 
 }

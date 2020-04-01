@@ -244,6 +244,14 @@ public abstract class ThreadsFragment extends BaseFragment {
             listThreads.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
             searchField.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
 
+            int unreadMessageCount = 0;
+            if (!showEmptyState) {
+                for (Thread thread : threads) {
+                    unreadMessageCount = unreadMessageCount + thread.getUnreadMessagesCount();
+                }
+            }
+            EventBus.getDefault().post(new EventData.UnreadMessageCountEvent(unreadMessageCount));
+
             adapter.updateThreads(threads);
         }
     }
