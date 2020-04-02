@@ -247,7 +247,9 @@ public abstract class ThreadsFragment extends BaseFragment {
             int unreadMessageCount = 0;
             if (!showEmptyState) {
                 for (Thread thread : threads) {
-                    unreadMessageCount = unreadMessageCount + thread.getUnreadMessagesCount();
+                    if (thread.getUnreadMessagesCount() > 0) {
+                        unreadMessageCount++;
+                    }
                 }
             }
             EventBus.getDefault().post(new EventData.UnreadMessageCountEvent(unreadMessageCount));
