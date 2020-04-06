@@ -9,11 +9,9 @@ package co.chatsdk.firebase.wrappers;
 
 import android.net.Uri;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
@@ -24,16 +22,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import co.chatsdk.core.dao.DaoCore;
 import co.chatsdk.core.dao.Keys;
 import co.chatsdk.core.dao.User;
 import co.chatsdk.core.defines.Availability;
 import co.chatsdk.core.events.NetworkEvent;
 import co.chatsdk.core.session.ChatSDK;
-import co.chatsdk.core.session.StorageManager;
 import co.chatsdk.core.utils.CrashReportingCompletableObserver;
-import co.chatsdk.core.utils.StringChecker;
 import co.chatsdk.core.utils.HashMapHelper;
+import co.chatsdk.core.utils.StringChecker;
 import co.chatsdk.firebase.FirebaseCoreHandler;
 import co.chatsdk.firebase.FirebaseEntity;
 import co.chatsdk.firebase.FirebaseEventListener;
@@ -121,8 +117,7 @@ public class UserWrapper {
         // Setting the name.
         if (!StringChecker.isNullOrEmpty(name) && StringChecker.isNullOrEmpty(model.getName())) {
             model.setName(name);
-        }
-        else {
+        } else {
             model.setName(ChatSDK.config().defaultName);
         }
 
@@ -137,8 +132,7 @@ public class UserWrapper {
 
         if (!StringChecker.isNullOrEmpty(profileURL) && StringChecker.isNullOrEmpty(model.getAvatarURL())) {
             model.setAvatarURL(profileURL);
-        }
-        else {
+        } else {
             String url = ChatSDK.config().defaultUserAvatarURL;
             model.setAvatarURL(url);
         }
@@ -213,6 +207,7 @@ public class UserWrapper {
 
     void deserializeMeta(Map<String, Object> value){
         if (value != null) {
+
             Map<String, String> oldData = model.metaMap();
 
             // Expand
@@ -220,6 +215,7 @@ public class UserWrapper {
 
             // Updating the old bundle
             for (String key : newData.keySet()) {
+
                 if (oldData.get(key) == null || !oldData.get(key).equals(newData.get(key))) {
                     oldData.put(key, newData.get(key).toString());
                 }

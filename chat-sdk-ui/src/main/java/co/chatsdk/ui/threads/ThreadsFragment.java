@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,7 @@ import co.chatsdk.core.dao.Thread;
 import co.chatsdk.core.dao.User;
 import co.chatsdk.core.events.EventType;
 import co.chatsdk.core.events.NetworkEvent;
+import co.chatsdk.core.interfaces.ThreadType;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.ui.R;
 import co.chatsdk.ui.main.BaseFragment;
@@ -67,6 +69,7 @@ public abstract class ThreadsFragment extends BaseFragment {
                 .filter(mainEventFilter())
                 .subscribe(networkEvent -> {
                     if (tabIsVisible || ChatSDK.config().isMenu) {
+                        Log.e("DEBUG", "mainEventFilter");
                         reloadData();
                     }
                 }));
@@ -80,6 +83,12 @@ public abstract class ThreadsFragment extends BaseFragment {
                     }
                 }));
 
+        disposableList.add(ChatSDK.events().sourceOnMain()
+                .filter(NetworkEvent.filterType(EventType.UserMetaUpdated))
+                .subscribe(networkEvent -> {
+                    reloadData();
+                }));
+        
         reloadData();
 
         mainView = inflater.inflate(activityLayout(), null);
@@ -239,22 +248,21 @@ public abstract class ThreadsFragment extends BaseFragment {
         if (adapter != null) {
             adapter.clearData();
             List<Thread> threads = filter(getThreads());
-            boolean showEmptyState = (threads.size() == 0);
+            List<Thread> threadFiltered = dmEnableForThread(threads);
+            boolean showEmptyState = (threadFiltered.size() == 0);
             containerEmptyState.setVisibility(showEmptyState ? View.VISIBLE : View.GONE);
             listThreads.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
-            searchField.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
+            // searchField.setVisibility(showEmptyState ? View.GONE : View.VISIBLE);
 
             int unreadMessageCount = 0;
             if (!showEmptyState) {
-                for (Thread thread : threads) {
-                    if (thread.getUnreadMessagesCount() > 0) {
-                        unreadMessageCount++;
-                    }
+                for (Thread thread : threadFiltered) {
+                    unreadMessageCount = unreadMessageCount + thread.getUnreadMessagesCount();
                 }
             }
             EventBus.getDefault().post(new EventData.UnreadMessageCountEvent(unreadMessageCount));
 
-            adapter.updateThreads(threads);
+            adapter.updateThreads(threadFiltered);
         }
     }
 
@@ -279,6 +287,36 @@ public abstract class ThreadsFragment extends BaseFragment {
             }
         }
         return filteredThreads;
+    }
+
+    private List<Thread> dmEnableForThread(List<Thread> threads) {
+        if (threads == null) return null;
+
+        List<Thread> newThreadList = new ArrayList<>();
+
+        for (Thread thread : threads) {
+            // Due to the bundle printing when the app execute on debug this sometime is null.
+            User currentUser = ChatSDK.currentUser();
+            String name = "";
+            boolean dmEnable;
+
+            if (thread.typeIs(ThreadType.Private)) {
+
+                for (User user : thread.getUsers()) {
+                    if (!user.getId().equals(currentUser.getId())) {
+                        String n = user.getName();
+                        dmEnable = user.isEnabledDM();
+
+                        if (dmEnable) {
+                            newThreadList.add(thread);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return newThreadList;
     }
 
 }

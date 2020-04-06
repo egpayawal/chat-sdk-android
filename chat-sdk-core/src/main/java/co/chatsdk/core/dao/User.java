@@ -177,8 +177,16 @@ public class User extends AbstractEntity implements UserListItem {
         return metaStringForKey(Keys.UserID);
     }
 
+    public void setUserId(String userID) {
+        setMetaString(Keys.UserID, userID);
+    }
+
     public boolean isEnabledDM() {
         return Boolean.parseBoolean(metaStringForKey(Keys.UserEnabledDM));
+    }
+
+    public void setEnableDM(String userEnableDM) {
+        setMetaString(Keys.UserEnabledDM, userEnableDM);
     }
 
     public void setEmail(String email) {
