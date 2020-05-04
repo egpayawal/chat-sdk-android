@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,7 +68,6 @@ public abstract class ThreadsFragment extends BaseFragment {
                 .filter(mainEventFilter())
                 .subscribe(networkEvent -> {
                     if (tabIsVisible || ChatSDK.config().isMenu) {
-                        Log.e("DEBUG", "mainEventFilter");
                         reloadData();
                     }
                 }));
@@ -257,7 +255,9 @@ public abstract class ThreadsFragment extends BaseFragment {
             int unreadMessageCount = 0;
             if (!showEmptyState) {
                 for (Thread thread : threadFiltered) {
-                    unreadMessageCount = unreadMessageCount + thread.getUnreadMessagesCount();
+                    if (thread.getUnreadMessagesCount() > 0) {
+                        unreadMessageCount++;
+                    }
                 }
             }
             EventBus.getDefault().post(new EventData.UnreadMessageCountEvent(unreadMessageCount));
